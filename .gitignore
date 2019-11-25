@@ -6,6 +6,9 @@ gl-compute.creator.user
 gl-compute.files
 gl-compute.includes
 
+# vim
+*.swp
+
 # Prerequisites
 *.d
 
