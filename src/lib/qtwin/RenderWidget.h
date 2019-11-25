@@ -24,7 +24,7 @@ namespace qtwin
     Q_OBJECT
 
     public:
-        RenderWidget(const QGLFormat& format);
+        RenderWidget(const QGLFormat& format = QGLFormat::defaultFormat());
         virtual ~RenderWidget();
 
     protected:

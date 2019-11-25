@@ -8,10 +8,8 @@ int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
 
-    QGLFormat glf = QGLFormat::defaultFormat();
-
     using namespace qtwin;
-    std::unique_ptr<RenderWidget> spGL(new RenderWidget(glf));
+    std::unique_ptr<RenderWidget> spGL(new RenderWidget());
     
     MainWindow window(spGL.get());
     spGL->setParent(&window);

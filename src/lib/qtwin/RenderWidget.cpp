@@ -77,7 +77,6 @@ namespace qtwin
     {
         glViewport(0, 0, width, height);
         m_curSize = QSize(width, height);
-        m_aspectRatio = static_cast<double>(width) / height;
     }
 
     void RenderWidget::paintGL()
