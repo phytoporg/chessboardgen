@@ -44,9 +44,6 @@ namespace qtwin
         GLuint m_vao;
         GLuint m_tex;
 
-        double m_panX;
-        double m_panY;
-        double m_scale;
         double m_aspectRatio;
     };
 }

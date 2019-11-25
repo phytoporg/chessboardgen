@@ -4,8 +4,7 @@
 #include <stdexcept>
 
 #include "shaders/quad.glsl.hpp"
-#include "shaders/palette.glsl.hpp"
-#include "shaders/mandelbrot.glsl.hpp"
+#include "shaders/raytracer.glsl.hpp"
 
 namespace 
 {
@@ -17,7 +16,7 @@ namespace
         );
         computeProgram.link(
             ComputeShader(
-                qtwin::GLVersion, {shaders::palette, shaders::mandelbrot})
+                qtwin::GLVersion, {shaders::raytracer})
         );
     }
 
@@ -76,13 +75,6 @@ namespace qtwin
 
     void RenderWidget::resizeGL(int width, int height)
     {
-        if (m_curSize == QSize(-1, -1))
-        {
-            m_panX = width  * 0.75;
-            m_panY = height * 0.50;
-            m_scale = 2.0 / height;
-        }
-
         glViewport(0, 0, width, height);
         m_curSize = QSize(width, height);
         m_aspectRatio = static_cast<double>(width) / height;
@@ -97,9 +89,6 @@ namespace qtwin
         }
 
         m_progCompute.use();
-
-	    glUniform2f(m_progCompute.uniform("center"), m_panX, m_panY);
-	    glUniform1f(m_progCompute.uniform("scale"), m_scale);
 
 	    glBindImageTexture(0, m_tex, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 
