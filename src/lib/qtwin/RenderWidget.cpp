@@ -43,8 +43,12 @@ namespace
 
 namespace qtwin
 {
-    RenderWidget::RenderWidget(const QGLFormat& format)
-    : QGLWidget(format, static_cast<QWidget*>(nullptr))
+    RenderWidget::RenderWidget(
+        const CameraIntrinsics& cameraIntrinsics,
+        const QGLFormat& format
+        )
+    : QGLWidget(format, static_cast<QWidget*>(nullptr)),
+      m_intrinsics(cameraIntrinsics)
     {
         grabKeyboard();
     }
@@ -105,6 +109,25 @@ namespace qtwin
 	    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
         m_progQuad.use();
+
+        //
+        // HEY HEY HEY
+        //
+
+        DELIBERATE BUILD BREAK HERE:
+        GET THESE PARAMS WORKING
+
+        //
+        // HEY HEY HEY
+        //
+
+        glUniform1f(m_progQuad.uniform("f"), m_intrinsics.GetFocalLength());
+        glUniform2fv(
+            m_progQuad.uniform("p"),
+            glm::value_ptr(m_intrinsics.GetPrincipalPoint()));
+        glUniform2fv(
+            m_progQuad.uniform("s"),
+            glm::value_ptr(m_intrinsics.GetSpatialResolution()));
 
         glUniform1i(m_progQuad.uniform("sampler"), 0);
         glActiveTexture(GL_TEXTURE0);

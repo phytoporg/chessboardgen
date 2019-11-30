@@ -12,6 +12,7 @@
 #include <QSize>
 #include <QtGui>
 
+#include "CameraIntrinsics.h"
 #include "Shader.hpp"
 
 //
@@ -24,7 +25,9 @@ namespace qtwin
     Q_OBJECT
 
     public:
-        RenderWidget(const QGLFormat& format = QGLFormat::defaultFormat());
+        RenderWidget(
+            const CameraIntrinsics& cameraIntrinsics,
+            const QGLFormat& format = QGLFormat::defaultFormat());
         virtual ~RenderWidget();
 
     protected:
@@ -45,6 +48,8 @@ namespace qtwin
         GLuint m_tex;
 
         double m_aspectRatio;
+
+        CameraIntrinsics m_intrinsics;
     };
 }
 

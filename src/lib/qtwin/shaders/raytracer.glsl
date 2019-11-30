@@ -3,6 +3,25 @@
 layout (local_size_x = 8, local_size_y = 8) in;
 layout (rgba32f, binding = 0) uniform image2D img_out;
 
+
+//
+// Focal length
+//
+
+uniform float f;
+
+//
+// Principal point
+//
+
+uniform vec2 p;
+
+//
+// Spatial resolution (mm)
+//
+
+uniform vec2 s;
+
 //
 // Blend from blue to white based on the up/downness of the input ray.
 //
@@ -77,29 +96,24 @@ vec4 color_quad(float u, float v)
 
 void main()
 {
-    //
-    // TODO: Real camera matrix
-    //    [ f_x, 0  , px]
-    // K =[   0, f_y, py]
-    //    [   0,   0,  1]
-    //
-
     vec3 origin = vec3(0.0, 0.0, 0.0);
-    vec3 lower_left = vec3(-2.0, -1.5, -1.0);
-    vec3 horizontal = vec3(4.0, 0.0, 0.0);
-    vec3 vertical = vec3(0.0, 3.0, 0.0);
+
+    vec3 upper_left = vec3(p.x - 0.5 * s.x, p.y - 0.5 * s.y, f);
+
+    vec2 size = imageSize(img_out);
+    vec3 U = s.x * vec3(1.0, 0.0, 0.0) / size.x;
+    vec3 V = s.y * vec3(0.0, 1.0, 0.0) / size.y;
 
     vec2 pixel_xy = gl_GlobalInvocationID.xy;
-    vec2 size = imageSize(img_out);
     vec2 uv = pixel_xy / size;
 
-    vec3 direction = lower_left + uv.x * horizontal + uv.y * vertical;
+    vec3 direction = upper_left + uv.x * U + uv.y * V;
 
     //
     // TODO: Model matrix uniform parameter.
     //
 
-    vec3 p = vec3(-2.0, -2.0, -3.0);
+    vec3 quad_point = vec3(-2.0, -2.0, -3.0);
 
     //
     // Normal faces directly into camera, so we should get a big red screen.
@@ -109,7 +123,8 @@ void main()
     vec3 quad_h = vec3(0.0, 4.0, 0.0);
     vec3 n = normalize(vec3(0.0, 0.0, -1.0));
 
-    vec3 hit_test = quad_intersect(p, n, quad_w, quad_h, origin, direction);
+    vec3 hit_test =
+        quad_intersect(quad_point, n, quad_w, quad_h, origin, direction);
     if (hit_test.x > 0.0) 
     {
         vec4 color = color_quad(hit_test.y, hit_test.z);
