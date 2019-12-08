@@ -3,6 +3,8 @@
 
 #include <stdexcept>
 
+#include <glm/gtc/type_ptr.hpp>
+
 #include "shaders/quad.glsl.hpp"
 #include "shaders/raytracer.glsl.hpp"
 
@@ -93,6 +95,21 @@ namespace qtwin
 
         m_progCompute.use();
 
+        //
+        // These aren't making it through. :(
+        //
+        BREAK HERE. Can't get uniforms working in compute shader.
+
+        glUniform1f(m_progQuad.uniform("f"), m_intrinsics.GetFocalLength());
+        glUniform2fv(
+            m_progQuad.uniform("p"),
+            1,
+            glm::value_ptr(m_intrinsics.GetPrincipalPoint()));
+        glUniform2fv(
+            m_progQuad.uniform("s"),
+            1,
+            glm::value_ptr(m_intrinsics.GetSpatialResolution()));
+
 	    glBindImageTexture(0, m_tex, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 
 	    int lsize[3];
@@ -114,20 +131,12 @@ namespace qtwin
         // HEY HEY HEY
         //
 
-        DELIBERATE BUILD BREAK HERE:
-        GET THESE PARAMS WORKING
+        //DELIBERATE BUILD BREAK HERE:
+        //GET THESE PARAMS WORKING
 
         //
         // HEY HEY HEY
         //
-
-        glUniform1f(m_progQuad.uniform("f"), m_intrinsics.GetFocalLength());
-        glUniform2fv(
-            m_progQuad.uniform("p"),
-            glm::value_ptr(m_intrinsics.GetPrincipalPoint()));
-        glUniform2fv(
-            m_progQuad.uniform("s"),
-            glm::value_ptr(m_intrinsics.GetSpatialResolution()));
 
         glUniform1i(m_progQuad.uniform("sampler"), 0);
         glActiveTexture(GL_TEXTURE0);

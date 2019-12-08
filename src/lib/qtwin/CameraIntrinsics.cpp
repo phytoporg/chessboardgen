@@ -2,7 +2,6 @@
 
 namespace qtwin
 {
-
     CameraIntrinsics::CameraIntrinsics(
         float f, 
         glm::vec2 p,

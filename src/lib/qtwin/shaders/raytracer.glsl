@@ -3,7 +3,6 @@
 layout (local_size_x = 8, local_size_y = 8) in;
 layout (rgba32f, binding = 0) uniform image2D img_out;
 
-
 //
 // Focal length
 //
@@ -98,12 +97,19 @@ void main()
 {
     vec3 origin = vec3(0.0, 0.0, 0.0);
 
-    vec3 upper_left = vec3(p.x - 0.5 * s.x, p.y - 0.5 * s.y, f);
-
     vec2 size = imageSize(img_out);
-    vec3 U = s.x * vec3(1.0, 0.0, 0.0) / size.x;
-    vec3 V = s.y * vec3(0.0, 1.0, 0.0) / size.y;
 
+    // vec3 U = vec3(s.x, 0.0, 0.0);
+    // vec3 V = vec3(0.0, -s.y, 0.0);
+
+    //vec3 U = vec3(4.0, 0.0, 0.0);
+    //vec3 V = vec3(0.0, -3.0, 0.0);
+
+    vec3 U = vec3(0.00376, 0.0, 0.0);
+    vec3 V = vec3(0.0, -0.00274, 0.0);
+
+    vec3 upper_left = vec3(-0.5 * U.x, -0.5 * V.y, -0.0036);
+    //vec3 upper_left = vec3(-0.5 * U.x, -0.5 * V.y, -f);
     vec2 pixel_xy = gl_GlobalInvocationID.xy;
     vec2 uv = pixel_xy / size;
 
@@ -113,14 +119,17 @@ void main()
     // TODO: Model matrix uniform parameter.
     //
 
-    vec3 quad_point = vec3(-2.0, -2.0, -3.0);
+    float quad_width = 4.0;
+    float quad_height = 4.0;
+    vec3 quad_point = vec3(-quad_width / 2.0, -quad_height / 2.0, -3.0);
 
     //
     // Normal faces directly into camera, so we should get a big red screen.
     //
     
-    vec3 quad_w = vec3(4.0, 0.0, 0.0);
-    vec3 quad_h = vec3(0.0, 4.0, 0.0);
+    vec3 quad_w = vec3(quad_width,         0.0,  0.0);
+    vec3 quad_h = vec3(0.0       , quad_height,  0.0);
+
     vec3 n = normalize(vec3(0.0, 0.0, -1.0));
 
     vec3 hit_test =
