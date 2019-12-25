@@ -106,7 +106,7 @@ void main()
     vec2 pixel_xy = gl_GlobalInvocationID.xy;
     vec2 uv = pixel_xy / size;
 
-    vec3 direction = normalize(upper_left + uv.x * U + uv.y * V);
+    vec3 direction = (upper_left + uv.x * U + uv.y * V) / f;
 
     //
     // TODO: Model matrix uniform parameter.
