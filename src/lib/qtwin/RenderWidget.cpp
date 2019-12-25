@@ -105,6 +105,16 @@ namespace qtwin
             1,
             glm::value_ptr(m_intrinsics.GetSpatialResolution()));
 
+        glUniform3fv(
+            m_progCompute.uniform("k"),
+            1,
+            glm::value_ptr(m_intrinsics.GetRadialDistortion()));
+
+        glUniform2fv(
+            m_progCompute.uniform("t"),
+            1,
+            glm::value_ptr(m_intrinsics.GetTangentialDistortion()));
+
 	    glBindImageTexture(0, m_tex, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 
 	    int lsize[3];

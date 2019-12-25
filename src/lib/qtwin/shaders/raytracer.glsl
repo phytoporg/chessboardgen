@@ -22,6 +22,13 @@ layout (location = 2) uniform vec2 p;
 layout (location = 3) uniform vec2 s;
 
 //
+// Distortion parameters
+//
+
+layout (location = 4) uniform vec3 k; // Radial parameters, poly3k model
+layout (location = 5) uniform vec2 t; // Tangental parameters
+
+//
 // Blend from blue to white based on the up/downness of the input ray.
 //
 
@@ -30,6 +37,47 @@ vec3 ray_to_color(vec3 origin, vec3 direction)
     vec3 normal = normalize(direction);
     float t = 0.5 * normal.y + 1.0;
     return (1.0 - t)*vec3(1.0, 1.0, 1.0) + t * vec3(0.5, 0.7, 1.0);
+}
+
+//
+// Distortion functions
+//
+vec2 radial_distortion(vec2 uv)
+{
+    //
+    // TODO: Include principle point in this calculation.
+    //
+    // Center the image coordinates.
+    //
+    vec2 c = uv - vec2(0.5, 0.5);
+    float r = dot(c, c);
+
+    float r2 = pow(r, 2.0);
+    float r4 = pow(r, 4.0);
+    float r6 = pow(r, 6.0);
+    float distortion = (1 + k.x * r2 + k.y * r4 + k.z * r6);
+
+    return c * distortion + (0.5, 0.5);
+}
+
+vec2 tangential_distortion(vec2 uv)
+{
+    //
+    // TODO: Include principle point in this calculation.
+    //
+    // Center the image coordinates.
+    //
+    vec2 c = uv - vec2(0.5, 0.5);
+    float r = dot(c, c);
+
+    float r2 = r * r;
+    float x2 = c.x * c.x;
+    float y2 = c.y * c.y;
+
+    return uv + 
+           vec2(
+            2.0 * t.x * c.x * c.y + t.y * (r2 + 2.0 * x2),
+            t.x * (r2 + 2.0 * y2) + 2.0 * t.y * c.x * c.y);
 }
 
 //
@@ -103,8 +151,10 @@ void main()
     vec3 V = vec3(0.0, -s.y, 0.0);
 
     vec3 upper_left = vec3(-0.5 * U.x, -0.5 * V.y, f);
-    vec2 pixel_xy = gl_GlobalInvocationID.xy;
-    vec2 uv = pixel_xy / size;
+    vec2 pixel_xy = gl_GlobalInvocationID.xy + vec2(0.5, 0.5);
+
+    vec2 uv = radial_distortion(pixel_xy / size);
+    uv = tangential_distortion(uv);
 
     vec3 direction = (upper_left + uv.x * U + uv.y * V) / f;
 
