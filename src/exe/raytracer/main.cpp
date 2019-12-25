@@ -9,6 +9,11 @@
 
 const float PI{3.141592636};
 
+static float DegreesToRadians(float degrees)
+{
+    return degrees * PI / 180.0f;
+}
+
 int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
@@ -17,12 +22,16 @@ int main(int argc, char** argv)
     // Hardcoding camera parameters for now
     //
 
-    // Sensor image area: 3.76 × 2.74 mm
-    const float ax{0.00376};
-    const float ay{0.00274};
-
-    const float FocalLength{0.0036}; // In meters
     const glm::vec2 PrincipalPoint(0.0, 0.0);
+
+    const float FovHorizontal = DegreesToRadians(62.2f);
+    const float FovVertical   = DegreesToRadians(48.8f);
+
+    const float FocalLength{0.00304f}; // In meters
+
+    const float ax{2.0f * FocalLength * tanf(FovHorizontal / 2.0f)};
+    const float ay{2.0f * FocalLength * tanf(FovVertical   / 2.0f)};
+
     const glm::vec2 SpatialResolution(ax, ay);
     const qtwin::CameraIntrinsics Intrinsics(
             FocalLength,

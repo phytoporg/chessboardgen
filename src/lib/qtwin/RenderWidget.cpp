@@ -95,18 +95,13 @@ namespace qtwin
 
         m_progCompute.use();
 
-        //
-        // These aren't making it through. :(
-        //
-        BREAK HERE. Can't get uniforms working in compute shader.
-
-        glUniform1f(m_progQuad.uniform("f"), m_intrinsics.GetFocalLength());
+        glUniform1f(m_progCompute.uniform("f"), m_intrinsics.GetFocalLength());
         glUniform2fv(
-            m_progQuad.uniform("p"),
+            m_progCompute.uniform("p"),
             1,
             glm::value_ptr(m_intrinsics.GetPrincipalPoint()));
         glUniform2fv(
-            m_progQuad.uniform("s"),
+            m_progCompute.uniform("s"),
             1,
             glm::value_ptr(m_intrinsics.GetSpatialResolution()));
 
@@ -126,17 +121,6 @@ namespace qtwin
 	    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
         m_progQuad.use();
-
-        //
-        // HEY HEY HEY
-        //
-
-        //DELIBERATE BUILD BREAK HERE:
-        //GET THESE PARAMS WORKING
-
-        //
-        // HEY HEY HEY
-        //
 
         glUniform1i(m_progQuad.uniform("sampler"), 0);
         glActiveTexture(GL_TEXTURE0);

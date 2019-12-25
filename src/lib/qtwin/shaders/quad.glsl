@@ -22,7 +22,6 @@ void main()
     texPos = texCoords[gl_VertexID];
 }
 
-
 #elif _FRAGMENT_
 
 in vec2 texPos;

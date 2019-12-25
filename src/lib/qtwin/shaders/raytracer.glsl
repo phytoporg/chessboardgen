@@ -7,19 +7,19 @@ layout (rgba32f, binding = 0) uniform image2D img_out;
 // Focal length
 //
 
-uniform float f;
+layout (location = 1) uniform float f;
 
 //
 // Principal point
 //
 
-uniform vec2 p;
+layout (location = 2) uniform vec2 p;
 
 //
 // Spatial resolution (mm)
 //
 
-uniform vec2 s;
+layout (location = 3) uniform vec2 s;
 
 //
 // Blend from blue to white based on the up/downness of the input ray.
@@ -72,7 +72,7 @@ quad_intersect(
     return invalid;
 }
 
-vec4 color_quad(float u, float v)
+vec4 chessboard_quad(float u, float v)
 {
     //
     // 8x8 chess board, black & white.
@@ -99,44 +99,38 @@ void main()
 
     vec2 size = imageSize(img_out);
 
-    // vec3 U = vec3(s.x, 0.0, 0.0);
-    // vec3 V = vec3(0.0, -s.y, 0.0);
+    vec3 U = vec3(s.x, 0.0, 0.0);
+    vec3 V = vec3(0.0, -s.y, 0.0);
 
-    //vec3 U = vec3(4.0, 0.0, 0.0);
-    //vec3 V = vec3(0.0, -3.0, 0.0);
-
-    vec3 U = vec3(0.00376, 0.0, 0.0);
-    vec3 V = vec3(0.0, -0.00274, 0.0);
-
-    vec3 upper_left = vec3(-0.5 * U.x, -0.5 * V.y, -0.0036);
-    //vec3 upper_left = vec3(-0.5 * U.x, -0.5 * V.y, -f);
+    vec3 upper_left = vec3(-0.5 * U.x, -0.5 * V.y, f);
     vec2 pixel_xy = gl_GlobalInvocationID.xy;
     vec2 uv = pixel_xy / size;
 
-    vec3 direction = upper_left + uv.x * U + uv.y * V;
+    vec3 direction = normalize(upper_left + uv.x * U + uv.y * V);
 
     //
     // TODO: Model matrix uniform parameter.
     //
 
-    float quad_width = 4.0;
-    float quad_height = 4.0;
-    vec3 quad_point = vec3(-quad_width / 2.0, -quad_height / 2.0, -3.0);
+    float quad_width  = 0.4064;
+    float quad_height = 0.4064;
+
+    float board_distance = 1.0;
+    vec3 quad_point = 
+        vec3(-quad_width / 2.0, -quad_height / 2.0, board_distance);
 
     //
-    // Normal faces directly into camera, so we should get a big red screen.
+    // Quad direction vectors
     //
-    
     vec3 quad_w = vec3(quad_width,         0.0,  0.0);
     vec3 quad_h = vec3(0.0       , quad_height,  0.0);
-
-    vec3 n = normalize(vec3(0.0, 0.0, -1.0));
+    vec3 n      = normalize(vec3(0.0, 0.0, 1.0));
 
     vec3 hit_test =
         quad_intersect(quad_point, n, quad_w, quad_h, origin, direction);
     if (hit_test.x > 0.0) 
     {
-        vec4 color = color_quad(hit_test.y, hit_test.z);
+        vec4 color = chessboard_quad(hit_test.y, hit_test.z);
         imageStore(img_out, ivec2(pixel_xy), color);
     }
     else

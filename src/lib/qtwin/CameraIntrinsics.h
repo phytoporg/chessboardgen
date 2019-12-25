@@ -24,7 +24,7 @@ namespace qtwin // Probably belongs in another namespace/library entirely.
         const glm::vec2 GetSpatialResolution() const;
 
     private:
-        float&    m_f;
+        float     m_f;
         glm::vec2 m_p;
         glm::vec2 m_s;
     };
