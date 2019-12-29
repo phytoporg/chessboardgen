@@ -49,6 +49,9 @@ int main(int argc, char** argv)
     std::unique_ptr<RenderWidget> spGL(
         new RenderWidget(Intrinsics)
         );
+
+    spGL->SetChessboardRotation(glm::radians(0.0f), glm::radians(15.0f), 0.0f);
+    spGL->SetChessboardTranslation(0.0, 0.0, 1.0);
     
     MainWindow window(spGL.get());
     spGL->setParent(&window);

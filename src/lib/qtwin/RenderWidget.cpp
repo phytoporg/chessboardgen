@@ -4,9 +4,15 @@
 #include <stdexcept>
 
 #include <glm/gtc/type_ptr.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/euler_angles.hpp>
 
 #include "shaders/quad.glsl.hpp"
 #include "shaders/raytracer.glsl.hpp"
+
+
+// REMOVEME
+#include <iostream>
 
 namespace 
 {
@@ -50,9 +56,23 @@ namespace qtwin
         const QGLFormat& format
         )
     : QGLWidget(format, static_cast<QWidget*>(nullptr)),
-      m_intrinsics(cameraIntrinsics)
+      m_intrinsics(cameraIntrinsics),
+      m_boardTransform(1.0f)
     {
         grabKeyboard();
+    }
+
+    void RenderWidget::SetChessboardRotation(float yaw, float pitch, float roll)
+    {
+        m_boardTransform =
+            m_boardTransform * glm::eulerAngleXYZ(yaw, pitch, roll);
+    }
+
+    void RenderWidget::SetChessboardTranslation(float x, float y, float z)
+    {
+        m_boardTransform[0][3] += x;
+        m_boardTransform[1][3] += y;
+        m_boardTransform[2][3] += z;
     }
 
     RenderWidget::~RenderWidget() 
@@ -114,6 +134,12 @@ namespace qtwin
             m_progCompute.uniform("t"),
             1,
             glm::value_ptr(m_intrinsics.GetTangentialDistortion()));
+
+        glUniformMatrix4fv(
+            m_progCompute.uniform("R"),
+            1,
+            false, // Transpose
+            glm::value_ptr(m_boardTransform));
 
 	    glBindImageTexture(0, m_tex, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 

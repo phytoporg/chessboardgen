@@ -29,6 +29,11 @@ layout (location = 4) uniform vec3 k; // Radial parameters, poly3k model
 layout (location = 5) uniform vec2 t; // Tangental parameters
 
 //
+// Plane transforms
+//
+layout (location = 6) uniform mat4 R; 
+
+//
 // Blend from blue to white based on the up/downness of the input ray.
 //
 
@@ -165,19 +170,20 @@ void main()
     float quad_width  = 0.4064;
     float quad_height = 0.4064;
 
-    float board_distance = 1.0;
-    vec3 quad_point = 
-        vec3(-quad_width / 2.0, -quad_height / 2.0, board_distance);
-
     //
     // Quad direction vectors
     //
     vec3 quad_w = vec3(quad_width,         0.0,  0.0);
     vec3 quad_h = vec3(0.0       , quad_height,  0.0);
-    vec3 n      = normalize(vec3(0.0, 0.0, 1.0));
+    vec3 quad_point = -0.5 * quad_w - 0.5 * quad_h;
+    
+    vec3 n = normalize(vec3(0.0, 0.0, 1.0));
 
     vec3 hit_test =
-        quad_intersect(quad_point, n, quad_w, quad_h, origin, direction);
+        quad_intersect(
+            vec3(R[0][3], R[1][3], R[2][3]) + quad_point,
+            mat3(R) * n, mat3(R) * quad_w, mat3(R) * quad_h,
+            origin, direction);
     if (hit_test.x > 0.0) 
     {
         vec4 color = chessboard_quad(hit_test.y, hit_test.z);
