@@ -30,6 +30,15 @@ namespace qtwin
             const QGLFormat& format = QGLFormat::defaultFormat());
         virtual ~RenderWidget();
 
+        void SetChessboardRotation(float yaw, float pitch, float roll);
+        void SetChessboardTranslation(float x, float y, float z);
+
+    private:
+        //
+        // Chessboard transformation parameters
+        //
+        glm::mat4 m_boardTransform;
+        
     protected:
 
         virtual void initializeGL();
