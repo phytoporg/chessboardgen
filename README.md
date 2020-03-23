@@ -11,4 +11,4 @@ If you're on OSX or Windows, the instructions should be similar though you may n
 
 # Execution instructions
 
-The `raytracer` binary takes one argument: a path to a camera configuration json file. You can find a default file in the config path, which has parameters intended to characterize a raspberry pi camera.
+The `raytracer` binary takes one argument: a path to a camera configuration json file. You can find a default file in the `config` directory, which has parameters intended to characterize a raspberry pi camera.
