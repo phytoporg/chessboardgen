@@ -5,7 +5,7 @@ This was originally intended to be the start of a raspberry pi drone projct, but
 
 In linux, from the root dir:
 
-`cmake -H. -Bbuild && cmake --build build --config Release -- -j16`
+`mkdir build; cmake -H. -Bbuild && cmake --build build --config Release -- -j16`
 
 If you're on OSX or Windows, the instructions should be similar though you may need to specify a different generator. I mostly tried to keep this all portable but this has only been tested in Linux, so your mileage may vary.
 
