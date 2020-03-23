@@ -1,5 +1,5 @@
 # dronehome
-This was originally intended to be the start of a raspberry pi drone projct, but just became an unfinished camera calibration pipeline.
+This was originally intended to be the start of a raspberry pi drone project, but just became a means to generate test data for a simple camera calibration pipeline. 
 
 # Build instructions
 
