@@ -1,4 +1,4 @@
-# dronehome
+# chessboardgen
 This was originally intended to be the start of a raspberry pi drone project, but just became a means to generate test data for a simple camera calibration pipeline. 
 
 # Build instructions
